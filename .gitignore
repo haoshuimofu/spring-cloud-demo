@@ -1,0 +1,18 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Gradle template
+.gradle
+/build/
+
+# File-based project format
+*.iws
+
+# IntelliJ
+out/
+
+### Maven template
+.idea/
+.idea_modules/
+target/
+.mvn/
+*.iml
+

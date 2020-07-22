@@ -1,0 +1,27 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:18761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    registry-fetch-interval-seconds: 5
+
+# feign默认配置 default, default->clientName则是具体FeignClient配置
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+  # classpath有hystrix就会开启
+  hystrix:
+    enabled: true
+
+spring:
+  application:
+    name: service-consumer
+server:
+  port: 18083
+  servlet:
+    context-path: /service-consumer
