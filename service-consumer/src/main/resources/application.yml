@@ -22,4 +22,4 @@ spring:
   application:
     name: service-consumer
 server:
-  port: 18083
+  port: 18082

@@ -21,7 +21,8 @@ public class HelloApiClientFallbackFactory implements FallbackFactory<HelloApiCl
         return new HelloApiClient() {
             @Override
             public JsonResult<String> sayHello(String name) {
-                return JsonResult.success("别试了，Hystrix熔断了!");
+                String message = "hi, " + name + ", 接口熔断了!";
+                return JsonResult.success(message);
             }
         };
     }
