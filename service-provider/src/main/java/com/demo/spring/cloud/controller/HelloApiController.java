@@ -15,7 +15,7 @@ public class HelloApiController implements HelloApi {
     public JsonResult<String> sayHello(String name) {
         // 线程sleep模拟超时熔断
         try {
-            Thread.sleep(8000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

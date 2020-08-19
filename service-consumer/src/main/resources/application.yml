@@ -14,15 +14,23 @@ feign:
       default:
         connectTimeout: 5000
         readTimeout: 10000 # feign调用接口阻塞时间超过此值则 Read time out executing xxx
-        loggerLevel: basic
+        loggerLevel: FULL
       service-provider:
         connectTimeout: 5000
         readTimeout: 5000
-        loggerLevel: basic
+        loggerLevel: FULL
+
   # classpath有hystrix就会开启
   hystrix:
     enabled: false
-
+  httpclient:
+    enabled: true
+    max-connections-per-route: 1
+    max-connections: 3
+    follow-redirects: true
+    time-to-live-unit: seconds
+    time-to-live: 60
+    connection-timeout: 3000
 spring:
   application:
     name: service-consumer
