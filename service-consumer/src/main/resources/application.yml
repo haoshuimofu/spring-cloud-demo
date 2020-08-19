@@ -7,16 +7,21 @@ eureka:
     registry-fetch-interval-seconds: 5
 
 # feign默认配置 default, default->clientName则是具体FeignClient配置
+# readTimeout超时优先级: 调用方 指定配置 > 默认配置 > Client中Provider定义的超时时间
 feign:
   client:
     config:
       default:
         connectTimeout: 5000
+        readTimeout: 10000 # feign调用接口阻塞时间超过此值则 Read time out executing xxx
+        loggerLevel: basic
+      service-provider:
+        connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: basic
   # classpath有hystrix就会开启
   hystrix:
-    enabled: true
+    enabled: false
 
 spring:
   application:
