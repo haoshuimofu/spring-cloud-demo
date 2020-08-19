@@ -20,6 +20,13 @@ public class HelloController {
 
     @GetMapping("/say")
     public JsonResult<String> sayHello(String name) {
-        return helloApiClient.sayHello(name);
+        JsonResult result = helloApiClient.sayHello(name);
+
+
+        for (int i = 0; i < 10; i++) {
+            System.err.println(i + " ");
+        }
+
+        return result;
     }
 }
