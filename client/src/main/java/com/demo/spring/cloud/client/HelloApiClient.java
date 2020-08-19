@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.FeignClient;
  * @author wude
  * @date 2020/4/29 11:11
  */
-@FeignClient(value = "service-provider", path = "service-provider",
+@FeignClient(value = "service-provider",
         configuration = FeignClientConfiguration.class,
         fallbackFactory = HelloApiClientFallbackFactory.class)
 public interface HelloApiClient extends HelloApi {

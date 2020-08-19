@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.FeignClient;
  * @author wude
  * @date 2020/4/29 15:42
  */
-@FeignClient(value = "service-provider-other", path = "service-provider",
+@FeignClient(value = "service-provider-other",
         configuration = FeignClientOtherConfiguration.class,
         fallbackFactory = OtherApiClientFallbackFactory.class)
 // 如果feign.hystrix.enabled=true开启熔断，而某个FeignClient没有配置fallback则会NullException

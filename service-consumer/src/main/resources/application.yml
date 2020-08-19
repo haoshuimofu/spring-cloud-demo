@@ -23,5 +23,3 @@ spring:
     name: service-consumer
 server:
   port: 18083
-  servlet:
-    context-path: /service-consumer
