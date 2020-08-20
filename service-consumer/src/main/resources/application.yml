@@ -17,12 +17,12 @@ feign:
         loggerLevel: FULL
       service-provider:
         connectTimeout: 5000
-        readTimeout: 5000
+        readTimeout: 2000
         loggerLevel: FULL
-
-  # classpath有hystrix就会开启
+  # feign 熔断设置
   hystrix:
-    enabled: false
+    enabled: true
+  # feign httpclient
   httpclient:
     enabled: true
     max-connections-per-route: 1
@@ -31,8 +31,37 @@ feign:
     time-to-live-unit: seconds
     time-to-live: 60
     connection-timeout: 3000
+
 spring:
   application:
     name: service-consumer
+#  cloud:
+#    circuitbreaker:
+#      hystrix:
+#        enabled: false
 server:
   port: 18082
+
+hystrix:
+  command:
+    test:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+# 全局设置
+ribbon:
+    readTimeout: 6000
+    ConnectTimeout: 6000
+    OkToRetryOnAllOperations: true
+    MaxAutoRetries: 1
+    MaxAutoRetriesNextServer: 2
+
+# 局部服务设置
+  service-provider:                                                      # 服务ID
+    ribbon:
+        ConnectTimeout: 6000                           # 毫秒    连接超时时间
+        ReadTimeout: 6000                                # 毫秒      逻辑处理超时时间
+        OkToRetryOnAllOperations: true         # 是否对所有操作都进行重试
+        MaxAutoRetries: 1    # 对当前实例的最大重试次数(请求服务超时6s则会再请求一次)    
+        MaxAutoRetriesNextServer: 1    # 切换实例的最大重试次数(如果还失败就切换下个实例访问,切换一次)
