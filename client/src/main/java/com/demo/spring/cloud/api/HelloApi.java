@@ -1,6 +1,6 @@
 package com.demo.spring.cloud.api;
 
-import com.demo.spring.cloud.JsonResult;
+import com.demo.spring.cloud.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface HelloApi {
 
     @GetMapping("/say")
-    JsonResult<String> sayHello(@RequestParam(value = "name", defaultValue = "none") String name);
+    ResponseEntity<String> sayHello(@RequestParam(value = "name", defaultValue = "none") String name);
 
 }

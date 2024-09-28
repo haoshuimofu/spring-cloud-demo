@@ -1,6 +1,6 @@
 package com.demo.spring.cloud.pure.controller;
 
-import com.demo.spring.cloud.JsonResult;
+import com.demo.spring.cloud.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @GetMapping("/get")
-    public JsonResult getUserInfo(@RequestParam("id") String id) {
+    public ResponseEntity getUserInfo(@RequestParam("id") String id) {
         String user = null;
         user.trim();
-        return JsonResult.success("用户已查询到!");
+        return ResponseEntity.success("用户已查询到!");
     }
 
 

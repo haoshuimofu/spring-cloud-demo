@@ -20,9 +20,9 @@ public class HelloApiClientFallbackFactory implements FallbackFactory<HelloApiCl
         LOGGER.error("## feign接口调用异常", throwable);
         return new HelloApiClient() {
             @Override
-            public JsonResult<String> sayHello(String name) {
+            public ResponseEntity<String> sayHello(String name) {
                 String message = "hi, " + name + ", 接口熔断了!";
-                return JsonResult.success(message);
+                return ResponseEntity.success(message);
             }
         };
     }

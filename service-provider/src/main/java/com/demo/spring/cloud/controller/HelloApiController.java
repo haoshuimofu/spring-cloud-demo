@@ -1,6 +1,6 @@
 package com.demo.spring.cloud.controller;
 
-import com.demo.spring.cloud.JsonResult;
+import com.demo.spring.cloud.ResponseEntity;
 import com.demo.spring.cloud.api.HelloApi;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloApiController implements HelloApi {
 
     @Override
-    public JsonResult<String> sayHello(String name) {
+    public ResponseEntity<String> sayHello(String name) {
         // 线程sleep模拟超时熔断
         try {
             Thread.sleep(3000);
@@ -22,6 +22,6 @@ public class HelloApiController implements HelloApi {
 
         // 服务端直接抛异常，测试异常是否传递
 //        System.err.println(1 / 0);
-        return JsonResult.success("Hello, " + name);
+        return ResponseEntity.success("Hello, " + name);
     }
 }

@@ -17,9 +17,9 @@ public class CommonExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
-    public JsonResult errorHandler(Exception ex) {
+    public ResponseEntity errorHandler(Exception ex) {
         LOGGER.error("### 程序执行出错!", ex);
-        return JsonResult.fail(500, "程序内部错误");
+        return ResponseEntity.fail("500", "程序内部错误");
     }
 
 }

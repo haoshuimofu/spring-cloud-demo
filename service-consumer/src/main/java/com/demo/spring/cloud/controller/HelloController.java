@@ -1,6 +1,6 @@
 package com.demo.spring.cloud.controller;
 
-import com.demo.spring.cloud.JsonResult;
+import com.demo.spring.cloud.ResponseEntity;
 import com.demo.spring.cloud.client.HelloApiClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +23,13 @@ public class HelloController {
     private HelloApiClient helloApiClient;
 
     @GetMapping("/say")
-    public JsonResult<String> sayHello(String name) {
+    public ResponseEntity<String> sayHello(String name) {
         try {
-            JsonResult result = helloApiClient.sayHello(name);
+            ResponseEntity result = helloApiClient.sayHello(name);
             return result;
         } catch (Exception e) {
             LOGGER.error("### feign异常!", e);
         }
-        return JsonResult.success("hi, default return!");
+        return ResponseEntity.success("hi, default return!");
     }
 }

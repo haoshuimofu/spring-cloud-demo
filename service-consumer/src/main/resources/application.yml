@@ -12,16 +12,16 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 5000
-        readTimeout: 10000 # feign调用接口阻塞时间超过此值则 Read time out executing xxx
+        connectTimeout: 1000
+        readTimeout: 3000 # feign调用接口阻塞时间超过此值则 Read time out executing xxx
         loggerLevel: FULL
       service-provider:
-        connectTimeout: 5000
-        readTimeout: 2000
+        connectTimeout: 1000
+        readTimeout: 10000
         loggerLevel: FULL
   # feign 熔断设置
   hystrix:
-    enabled: true
+    enabled: false
   # feign httpclient
   httpclient:
     enabled: true
@@ -56,12 +56,3 @@ ribbon:
     OkToRetryOnAllOperations: true
     MaxAutoRetries: 1
     MaxAutoRetriesNextServer: 2
-
-# 局部服务设置
-  service-provider:                                                      # 服务ID
-    ribbon:
-        ConnectTimeout: 6000                           # 毫秒    连接超时时间
-        ReadTimeout: 6000                                # 毫秒      逻辑处理超时时间
-        OkToRetryOnAllOperations: true         # 是否对所有操作都进行重试
-        MaxAutoRetries: 1    # 对当前实例的最大重试次数(请求服务超时6s则会再请求一次)    
-        MaxAutoRetriesNextServer: 1    # 切换实例的最大重试次数(如果还失败就切换下个实例访问,切换一次)
