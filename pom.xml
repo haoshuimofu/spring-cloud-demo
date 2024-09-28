@@ -14,7 +14,7 @@
         <module>service-consumer</module>
         <module>service-provider</module>
         <module>eureka-server</module>
-        <module>gateway</module>
+        <module>service-gateway</module>
     </modules>
 
 
@@ -95,6 +95,13 @@
                 <artifactId>lombok</artifactId>
                 <version>1.18.34</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2 -->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>2.0.53</version>
             </dependency>
 
         </dependencies>

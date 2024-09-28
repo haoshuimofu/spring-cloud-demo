@@ -9,27 +9,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @author wude
- * @date 2020/4/29 11:05
- */
 @RestController
-@RequestMapping("/consumer/auth")
-public class HelloController {
+@RequestMapping("/consumer/pass")
+public class GuestController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HelloController.class);
 
     @Autowired
     private HelloApiClient helloApiClient;
 
-    @GetMapping("/hello/say")
+    @GetMapping("/say")
     public ResponseEntity<String> sayHello(String name) {
-        try {
-            ResponseEntity result = helloApiClient.sayHello(name);
-            return result;
-        } catch (Exception e) {
-            LOGGER.error("### feign异常!", e);
-        }
-        return ResponseEntity.success("hi, default return!");
+        return ResponseEntity.success("welcome, you are a guest!");
     }
+
 }

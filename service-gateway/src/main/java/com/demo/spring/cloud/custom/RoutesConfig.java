@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Configuration;
  * @author wude
  * @date 2020/5/16 18:01
  */
-@Configuration
+//@Configuration
 public class RoutesConfig {
 
-    @Bean
+//    @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder routeLocatorBuilder) {
         return routeLocatorBuilder.routes()
                 .route(r -> r.path("/service-provider-other/**")

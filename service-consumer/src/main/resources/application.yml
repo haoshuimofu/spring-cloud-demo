@@ -1,10 +1,17 @@
+server:
+  port: 18082
+
+spring:
+  application:
+    name: service-consumer
+
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:18761/eureka/
     register-with-eureka: true
     fetch-registry: true
-    registry-fetch-interval-seconds: 5
+    registry-fetch-interval-seconds: 3
 
 # feign默认配置 default, default->clientName则是具体FeignClient配置
 # readTimeout超时优先级: 调用方 指定配置 > 默认配置 > Client中Provider定义的超时时间
@@ -13,46 +20,64 @@ feign:
     config:
       default:
         connectTimeout: 1000
-        readTimeout: 3000 # feign调用接口阻塞时间超过此值则 Read time out executing xxx
-        loggerLevel: FULL
+        readTimeout: 5000 # feign调用接口阻塞时间超过此值则 Read time out executing xxx
+        loggerLevel: BASIC
       service-provider:
         connectTimeout: 1000
-        readTimeout: 10000
-        loggerLevel: FULL
-  # feign 熔断设置
+        readTimeout: 3000
+        loggerLevel: BASIC
+  # feign熔断设置
   hystrix:
-    enabled: false
+    enabled: true
   # feign httpclient
   httpclient:
     enabled: true
-    max-connections-per-route: 1
-    max-connections: 3
-    follow-redirects: true
-    time-to-live-unit: seconds
+    max-connections: 200
+    max-connections-per-route: 50
+    connection-timeout: 1000
     time-to-live: 60
-    connection-timeout: 3000
+    time-to-live-unit: seconds
+    follow-redirects: true
 
-spring:
-  application:
-    name: service-consumer
-#  cloud:
-#    circuitbreaker:
-#      hystrix:
-#        enabled: false
-server:
-  port: 18082
-
+#https://blog.csdn.net/xiaofeng10330111/article/details/87272337?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-87272337-blog-111479039.235^v43^pc_blog_bottom_relevance_base7&spm=1001.2101.3001.4242.1&utm_relevant_index=3
+#hystrix的超时时间
 hystrix:
   command:
-    test:
+    default:
+      fallback:
+        #当执行失败或者请求被拒绝，是否会尝试调用hystrixCommand.getFallback() 。默认true
+        enabled: true
       execution:
+        timeout:
+          #执行是否启用超时，默认启用true
+          enabled: true
         isolation:
+          #隔离策略，默认是Thread，THREAD｜SEMAPHORE
+          strategy: THREAD
           thread:
-            timeoutInMilliseconds: 60000
+            #发生超时是是否中断，默认true
+            interruptOnTimeout: true
+            #命令执行超时时间，默认1000ms
+            timeoutInMilliseconds: 50000
+          semaphore:
+            #最大并发请求数，默认10，该参数当使用ExecutionIsolationStrategy.SEMAPHORE策略时才有效。
+            #如果达到最大并发请求数，请求会被拒绝。
+            #理论上选择semaphore size的原则和选择thread size一致，但选用semaphore时每次执行的单元要比较小且执行速度快（ms级别），否则的话应该用thread。
+            maxConcurrentRequests: 5
+    service-provider:
+      execution:
+        timeout:
+          enabled: true
+
+
 # 全局设置
 ribbon:
-    readTimeout: 6000
-    ConnectTimeout: 6000
-    OkToRetryOnAllOperations: true
-    MaxAutoRetries: 1
-    MaxAutoRetriesNextServer: 2
+  # 这个默认配置也是打开的
+  #  http:
+  #    client:
+  #      enabled: true
+  # ribbon的读超时时间，不配置的话默认1s超时。当hystrix和ribbon都配置的时候，超时时间以谁小为准。
+  ReadTimeout: 30000
+  # 关于重试的，一定要配置，不然会重试并影响最终的响应时间（默认重试4次）
+  MaxAutoRetries: 0   #当前实例重试的次数，失败之后更换下个实例
+  MaxAutoRetriesNextServer: 1  #更换实例的次数

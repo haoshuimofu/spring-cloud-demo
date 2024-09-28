@@ -1,0 +1,35 @@
+server:
+  port: 18080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:18761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+    registry-fetch-interval-seconds: 5
+
+spring:
+  application:
+    name: service-gateway
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    gateway:
+      routes:
+        - id: service_consumer
+          uri: lb://service-consumer
+          predicates:
+            - Path=/consumer/auth/**
+          filters:
+            - name: AuthFilterFactory
+        - id: service_cononsuer_auth
+          uri: lb://service-consumer
+          predicates:
+            - Path=/consumer/pass/**
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+

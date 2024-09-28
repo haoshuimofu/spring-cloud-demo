@@ -15,7 +15,7 @@ public class HelloApiController implements HelloApi {
     public ResponseEntity<String> sayHello(String name) {
         // 线程sleep模拟超时熔断
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
