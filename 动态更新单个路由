@@ -1,0 +1,58 @@
+DynamicRouteService
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
+import org.springframework.cloud.gateway.route.RouteDefinitionWriter;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+
+@Service
+public class DynamicRouteService {
+
+    @Autowired
+    private RouteDefinitionWriter routeDefinitionWriter;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
+    public Mono<Void> updateRoute(String id, RouteDefinition route) {
+        return routeDefinitionWriter.save(Mono.just(route))
+                .then(this.publisher.publishEvent(new RefreshRoutesEvent(this)));
+    }
+}
+
+
+RouteDefinition routeDefinition = new RouteDefinition();
+// 设置routeDefinition的属性，例如
+routeDefinition.setId("my-route-id");
+routeDefinition.setUri(URI.create("http://my-service.com"));
+// ... 设置其他属性
+
+dynamicRouteService.updateRoute("my-route-id", routeDefinition)
+        .subscribe();
+
+
+
+
+        import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
+        import org.springframework.cloud.gateway.support.NameUtils;
+
+        public class PredicateDefinitionExample {
+            public static PredicateDefinition createPathPredicate(String path) {
+                PredicateDefinition predicateDefinition = new PredicateDefinition();
+                predicateDefinition.setName(NameUtils.generateName(PathRoutePredicateFactory.class));
+
+                // 设置匹配规则的参数，这里是路径匹配
+                Map<String, String> args = new HashMap<>();
+                args.put(PathRoutePredicateFactory.DASH_PATTERN, path);
+                predicateDefinition.setArgs(args);
+
+                return predicateDefinition;
+            }
+
+            public static void main(String[] args) {
+                PredicateDefinition predicateDefinition = createPathPredicate("/examplePath");
+                // 这里可以打印或者使用这个predicateDefinition做其他事情
+                System.out.println(predicateDefinition);
+            }
+        }

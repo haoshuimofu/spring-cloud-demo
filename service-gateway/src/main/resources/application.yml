@@ -24,7 +24,7 @@ spring:
             - Path=/consumer/auth/**
           filters:
             - name: AuthFilterFactory
-        - id: service_cononsuer_auth
+        - id: service_consumer_auth
           uri: lb://service-consumer
           predicates:
             - Path=/consumer/pass/**
