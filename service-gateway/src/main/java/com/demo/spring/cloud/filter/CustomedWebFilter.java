@@ -1,4 +1,4 @@
-package com.demo.spring.cloud;
+package com.demo.spring.cloud.filter;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBufferFactory;
@@ -11,13 +11,17 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+/**
+ * Spring-web 过滤器, 不会处理spring cloud gateway的异常
+ */
 @Component
 @Order(-1) // 确保这个过滤器是第一个运行
-public class GlobalErrorWebFilter implements WebFilter {
+public class CustomedWebFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return chain.filter(exchange).onErrorResume(throwable -> {
+            System.out.println("[Web]" + exchange.getRequest().getURI().getPath() + " 出错了!");
             throwable.printStackTrace();
             // 检查异常是否是ResponseStatusException
             if (throwable instanceof ResponseStatusException) {

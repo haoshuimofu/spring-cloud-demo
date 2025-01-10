@@ -24,6 +24,15 @@ spring:
             - Path=/consumer/auth/**
           filters:
             - name: AuthFilterFactory
+            - name: Retry
+              args:
+                retries: 3             # 设置重试次数
+                statuses: BAD_REQUEST  # 设置触发重试的HTTP状态码
+                series: SERVER_ERROR   # 设置触发重试的HTTP状态码系列
+                backoff:
+                  firstBackoff: 1000ms # 设置初始退避间隔
+                  maxBackoff: 2000ms   # 设置最大退避间隔
+                  multiplier: 1.5      # 设置退避间隔乘法因子
         - id: service_consumer_auth
           uri: lb://service-consumer
           predicates:
