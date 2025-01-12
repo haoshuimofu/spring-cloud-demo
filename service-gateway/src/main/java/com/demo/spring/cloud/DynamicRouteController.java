@@ -1,7 +1,7 @@
 package com.demo.spring.cloud;
 
 import com.demo.spring.cloud.route.CustomedRouteDefinitionRepository;
-import com.demo.spring.cloud.route.CustomedRouteLocator;
+import com.demo.spring.cloud.route.CustomedRouteDefinitionRouteLocator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,11 +15,11 @@ public class DynamicRouteController {
     private CustomedRouteDefinitionRepository customedRouteDefinitionRepository;
 
     @Autowired
-    private CustomedRouteLocator customedRouteLocator;
+    private CustomedRouteDefinitionRouteLocator customedRouteDefinitionRouteLocator;
 
     @RequestMapping("/save")
     public String save() {
-        customedRouteLocator.saveRoute(new Object());
+        customedRouteDefinitionRouteLocator.saveRoute(new Object());
         return "SUCCESS";
     }
 
