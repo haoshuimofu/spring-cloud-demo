@@ -1,5 +1,8 @@
 package com.demo.spring.cloud.route;
 
+import com.demo.spring.cloud.exception.RetryNotifyException;
+import com.demo.spring.cloud.utils.URIUtils;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.RetryGatewayFilterFactory;
@@ -19,50 +22,59 @@ import java.util.stream.Collectors;
 
 public class RouteDefinitionConverter {
 
+    public static RouteDefinition buildRouteDefinition(CallbackConfigEntity callbackConfig) throws Exception {
+        return buildRouteDefinition(callbackConfig, callbackConfig.getOutUrl());
+    }
+
     /**
      * [GatewayProperties@4bdf routes = list[RouteDefinition{id='service_consumer', predicates=[PredicateDefinition{name='Path', args={_genkey_0=/consumer/auth/**}}], filters=[FilterDefinition{name='AuthFilterFactory', args={}}, FilterDefinition{name='Retry', args={retries=3, statuses=BAD_REQUEST, series=SERVER_ERROR, backoff.firstBackoff=1000ms, backoff.maxBackoff=2000ms, backoff.multiplier=1.5}}], uri=lb://service-consumer, order=0, metadata={}}, RouteDefinition{id='service_consumer_auth', predicates=[PredicateDefinition{name='Path', args={_genkey_0=/consumer/pass/**}}], filters=[], uri=lb://service-consumer, order=0, metadata={}}], defaultFilters = list[[empty]], streamingMediaTypes = list[text/event-stream, application/stream json], failOnRouteDefinitionError = true]
      * <p>
      * FilterDefinition{name='Retry', args={retries=3, statuses=BAD_REQUEST, series=SERVER_ERROR, backoff.firstBackoff=1000ms, backoff.maxBackoff=2000ms, backoff.multiplier=1.5}}]
      *
-     * @param obj
+     * @param callbackConfig
      * @return
      */
-    public static RouteDefinition buildRouteDefinition(Object obj) {
+    public static RouteDefinition buildRouteDefinition(CallbackConfigEntity callbackConfig, String url) throws Exception {
         RouteDefinition rd = new RouteDefinition();
-        rd.setId("baidu");
-        rd.setUri(URI.create("http://www.222baidu111.com"));
+        rd.setId(callbackConfig.getInPath());
+        Triple<String, String, String> urlInfo = URIUtils.getURLInfo(url);
+        rd.setUri(URI.create(urlInfo.getLeft()));
 
         PredicateDefinition pathPredicate = new PredicateDefinition();
         pathPredicate.setName("Path");
         Map<String, String> pathArgs = new HashMap<String, String>();
-        pathArgs.put("pattern", "/s");
+        pathArgs.put("pattern", urlInfo.getMiddle());
         pathPredicate.setArgs(pathArgs);
 
         rd.setPredicates(Collections.singletonList(pathPredicate));
 
         Map<String, Object> metadata = new HashMap<>();
-        metadata.put("url", "http://www.baidu.com/s");
-        // timeout
-        metadata.put("connect-timeout", 1000);
-        metadata.put("response-timeout", 1000);
+        metadata.put("url", urlInfo.getRight());
+        if (callbackConfig.getTimeoutMillis() > 0) {
+            metadata.put("connect-timeout", callbackConfig.getTimeoutMillis());
+            metadata.put("response-timeout", callbackConfig.getTimeoutMillis());
+        }
         rd.setMetadata(metadata);
 
-        FilterDefinition retryFd = new FilterDefinition();
-        retryFd.setName("Retry");
-        Map<String, String> retryArgs = new HashMap<>();
-        retryArgs.put("retries", "2");
-        retryArgs.put("series", HttpStatus.Series.SERVER_ERROR.name());
-        retryArgs.put("methods", HttpMethod.GET.name() + "," + HttpMethod.POST.name());
-        // backoff
-        retryArgs.put("backoff.firstBackoff", "3000ms");
-        retryArgs.put("backoff.maxBackoff", "3000ms");
-        retryArgs.put("backoff.multiplier", "2");
-        retryFd.setArgs(retryArgs);
-
-        rd.setFilters(Collections.singletonList(retryFd));
+        if (callbackConfig.isRetryOnError() && callbackConfig.getRetryTimes() > 0) {
+            FilterDefinition retryFd = new FilterDefinition();
+            retryFd.setName("Retry");
+            Map<String, String> retryArgs = new HashMap<>();
+            retryArgs.put("retries", String.valueOf(callbackConfig.getRetryTimes()));
+//            retryArgs.put("series", HttpStatus.Series.SERVER_ERROR.name());
+            retryArgs.put("exceptions", RetryNotifyException.class.getName());
+            retryArgs.put("methods", HttpMethod.GET.name() + "," + HttpMethod.POST.name());
+            if (callbackConfig.getRetryIntervalMillis() > 0) {
+                // backoff
+                retryArgs.put("backoff.firstBackoff", "3000ms");
+                retryArgs.put("backoff.maxBackoff", "3000ms");
+                retryArgs.put("backoff.multiplier", "2");
+            }
+            retryFd.setArgs(retryArgs);
+            rd.setFilters(Collections.singletonList(retryFd));
+        }
 
         return rd;
-
     }
 
     /**

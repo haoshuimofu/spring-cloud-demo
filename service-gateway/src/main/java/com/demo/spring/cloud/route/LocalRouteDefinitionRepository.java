@@ -14,7 +14,7 @@ import java.util.Map;
 import static java.util.Collections.synchronizedMap;
 
 @Component
-public class CustomedRouteDefinitionRepository implements RouteDefinitionRepository {
+public class LocalRouteDefinitionRepository implements RouteDefinitionRepository {
 
     private final Map<String, RouteDefinition> routes = synchronizedMap(new LinkedHashMap<>());
 

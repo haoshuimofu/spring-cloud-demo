@@ -1,9 +1,7 @@
 package com.demo.spring.cloud;
 
-import com.demo.spring.cloud.route.CustomedRouteDefinitionRepository;
-import com.demo.spring.cloud.route.CustomedRouteDefinitionRouteLocator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -11,21 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/route")
 public class DynamicRouteController {
 
-    @Autowired
-    private CustomedRouteDefinitionRepository customedRouteDefinitionRepository;
 
-    @Autowired
-    private CustomedRouteDefinitionRouteLocator customedRouteDefinitionRouteLocator;
-
-    @RequestMapping("/save")
-    public String save() {
-        customedRouteDefinitionRouteLocator.saveRoute(new Object());
-        return "SUCCESS";
+    @RequestMapping("/fixed/test")
+    public String fixedRoute() {
+        return "fixed url";
     }
 
-    @RequestMapping("/exception")
-    public String exception() {
-        throw new RuntimeException("exception");
+    @RequestMapping("/dynamic/test")
+    public String dynamicRoute(@RequestParam("url") String url) {
+        return "dynamic url";
     }
 
 
